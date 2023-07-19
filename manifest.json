@@ -1,0 +1,12 @@
+[
+    {
+        "name": "Imaged Folders",
+        "description": "Add image to your playlist folders!",
+        "main": "/dist/imaged-folders.js",
+        "preview": "/assets/preview-marketplace.gif",
+        "readme": "README.md",
+        "tags": [
+            "folders", "icons"
+        ]
+    }
+]
