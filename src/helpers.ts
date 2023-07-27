@@ -48,10 +48,10 @@ export function createFolderIconPlaceholder(): HTMLDivElement {
   const placeholderSVGPath2 = document.createElementNS("http://www.w3.org/2000/svg", "path");
 
   placeholder.classList.add(playlistIconsExtensionClass, "folder");
-  placeholderSVG.setAttribute(
-    "style",
-    "height: 24px; width: 24px; viewbox: 0 0 24 24; fill: #FFFFFF",
-  );
+  placeholderSVG.setAttribute("height", "24px");
+  placeholderSVG.setAttribute("viewBox", "0 0 24 24");
+  placeholderSVG.setAttribute("width", "24px");
+  placeholderSVG.setAttribute("fill", "#FFFFFF");
   placeholderSVGPath.setAttribute("d", "M0 0h24v24H0V0z");
   placeholderSVGPath.setAttribute("fill", "none");
   placeholderSVGPath2.setAttribute("d", folderSVGPath);
@@ -69,11 +69,15 @@ export function createFolderIconPlaceholderX(isGridView: boolean): HTMLDivElemen
 
   const size = isGridView ? "64" : "24";
   placeholder.classList.add(
-    "Svg-sc-ytk21e-0",
     isGridView ? "main-card-imagePlaceholder" : "x-entityImage-imagePlaceholder",
   );
-  placeholderSVG.classList.add(`Svg-img-textSubdued-${size}-icon`);
-  placeholderSVG.setAttribute("style", `height: ${size}; width: ${size}; viewbox: 0 0 24 24;`);
+  placeholderSVG.classList.add(
+    "Svg-sc-ytk21e-0",
+    isGridView ? "Svg-img-textSubdued-64-icon" : "Svg-img-24-icon",
+  );
+  placeholderSVG.setAttribute("height", `${size}px`);
+  placeholderSVG.setAttribute("width", `${size}px`);
+  placeholderSVG.setAttribute("viewBox", "0 0 24 24");
   placeholderSVG.setAttribute("aria-hidden", "true");
   placeholderSVG.setAttribute("role", "img");
   placeholderSVGPath.setAttribute("d", folderSVGPathX);
