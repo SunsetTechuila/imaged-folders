@@ -7,7 +7,7 @@ export const rootlistAPIURL = "sp://core-playlist/v1/rootlist";
 
 export const storageItemPrefix = "folder-image";
 
-export const playlistIconsExtensionClass = "playlist-item__img";
+export const playlistIconsExtensionSelector = "div.playlist-item__img.folder";
 
 export const rootlistXClass = "main-yourLibraryX-libraryRootlist";
 

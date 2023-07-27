@@ -1,5 +1,4 @@
 import {
-  playlistIconsExtensionClass,
   folderElementXSelector,
   folderElementSelector,
   folderSVGPath,
@@ -7,7 +6,7 @@ import {
 } from "./constants";
 
 export function isLibraryX(): boolean {
-  return Boolean(document.getElementsByClassName("main-yourLibraryX-entryPoints")[0])
+  return Boolean(document.getElementsByClassName("main-yourLibraryX-entryPoints")[0]);
 }
 
 export function getAllFolderElements(): NodeListOf<HTMLLIElement> {
@@ -29,7 +28,7 @@ export function cleanUpFolderImageContainer(container: Element): void {
     container.getElementsByClassName("main-image-image")[0]?.remove();
     container.querySelector('div[class *= "imagePlaceholder"]')?.remove();
   } else {
-    container.getElementsByClassName(playlistIconsExtensionClass)[0]?.remove();
+    container.replaceChildren();
   }
 }
 
@@ -41,13 +40,11 @@ export function isPlaylistsInGridView(): boolean {
   );
 }
 
-export function createFolderIconPlaceholder(): HTMLDivElement {
-  const placeholder = document.createElement("div");
+export function createFolderIconPlaceholder(): SVGSVGElement {
   const placeholderSVG = document.createElementNS("http://www.w3.org/2000/svg", "svg");
   const placeholderSVGPath = document.createElementNS("http://www.w3.org/2000/svg", "path");
   const placeholderSVGPath2 = document.createElementNS("http://www.w3.org/2000/svg", "path");
 
-  placeholder.classList.add(playlistIconsExtensionClass, "folder");
   placeholderSVG.setAttribute("height", "24px");
   placeholderSVG.setAttribute("viewBox", "0 0 24 24");
   placeholderSVG.setAttribute("width", "24px");
@@ -57,9 +54,8 @@ export function createFolderIconPlaceholder(): HTMLDivElement {
   placeholderSVGPath2.setAttribute("d", folderSVGPath);
 
   placeholderSVG.append(placeholderSVGPath, placeholderSVGPath2);
-  placeholder.appendChild(placeholderSVG);
 
-  return placeholder;
+  return placeholderSVG;
 }
 
 export function createFolderIconPlaceholderX(isGridView: boolean): HTMLDivElement {

@@ -1,7 +1,7 @@
 import {
   imageContainerXSelector,
   imageContainerXCardSelector,
-  playlistIconsExtensionClass,
+  playlistIconsExtensionSelector,
   storageItemPrefix,
   rootlistAPIURL,
   playlistsContainerGridSelector,
@@ -14,7 +14,7 @@ import {
   isPlaylistsInGridView,
   createFolderIconPlaceholder,
   createFolderIconPlaceholderX,
-  isLibraryX
+  isLibraryX,
 } from "./helpers";
 import { RootlistRow, RootlistRoot, RootlistFolder } from "./types/rootlist";
 
@@ -34,18 +34,11 @@ export function getFolderElement(id: string): HTMLLIElement | null {
 }
 
 export function getFolderImageContainer(inputElement: Element): Element | null {
-  if (isLibraryX()) {
-    let container = inputElement.querySelector(imageContainerXSelector);
-    if (!container) {
-      container = inputElement.querySelector(imageContainerXCardSelector);
-    }
-    return container;
-  }
-
-  const hasPlaceForIcon = inputElement.firstElementChild?.classList.contains(
-    playlistIconsExtensionClass,
-  );
-  return hasPlaceForIcon ? inputElement : null;
+  if (isLibraryX())
+    return inputElement.querySelector(
+      isPlaylistsInGridView() ? imageContainerXCardSelector : imageContainerXSelector,
+    );
+  return inputElement.querySelector(playlistIconsExtensionSelector);
 }
 
 export function getFolderIDFrom(input: Element | string): string | undefined {
@@ -95,7 +88,8 @@ export function addImageToFolderElement(imageContainer: Element, imageBase64: st
       isCardView ? "main-cardImage-image" : "x-entityImage-image",
     );
   } else {
-    image.classList.add(playlistIconsExtensionClass);
+    image.style.width = "100%";
+    image.style.height = "100%";
   }
   image.src = imageBase64;
   cleanUpFolderImageContainer(imageContainer);
