@@ -1,36 +1,18 @@
-import {
-  folderElementXSelector,
-  folderElementSelector,
-  folderSVGPath,
-  folderSVGPathX,
-  storageItemPrefix
-} from "./constants";
-
-export function isLibraryX(): boolean {
-  return Boolean(document.getElementsByClassName("main-yourLibraryX-entryPoints")[0]);
-}
+import { folderElementSelector, folderSVGPath, storageItemPrefix } from "./constants";
 
 export function getAllFolderElements(): NodeListOf<HTMLLIElement> {
-  return isLibraryX()
-    ? document.querySelectorAll(folderElementXSelector)
-    : document.querySelectorAll(folderElementSelector);
+  return document.querySelectorAll(folderElementSelector);
 }
 
 export function getFolderIDFromElement(inputElement: Element): string | undefined {
-  const match = isLibraryX()
-    ? inputElement.getAttribute("aria-labelledby")?.match(/folder:(\w+)$/)
-    : inputElement.getAttribute("href")?.match(/folder\/(\w+)$/);
+  const match = inputElement.getAttribute("aria-labelledby")?.match(/folder:(\w+)$/);
   if (match) return match[1];
   return undefined;
 }
 
 export function cleanUpFolderImageContainer(container: Element): void {
-  if (isLibraryX()) {
-    container.getElementsByClassName("main-image-image")[0]?.remove();
-    container.querySelector('div[class *= "imagePlaceholder"]')?.remove();
-  } else {
-    container.replaceChildren();
-  }
+  container.getElementsByClassName("main-image-image")[0]?.remove();
+  container.querySelector('div[class *= "imagePlaceholder"]')?.remove();
 }
 
 export function isPlaylistsInGridView(): boolean {
@@ -41,25 +23,7 @@ export function isPlaylistsInGridView(): boolean {
   );
 }
 
-export function createFolderIconPlaceholder(): SVGSVGElement {
-  const placeholderSVG = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-  const placeholderSVGPath = document.createElementNS("http://www.w3.org/2000/svg", "path");
-  const placeholderSVGPath2 = document.createElementNS("http://www.w3.org/2000/svg", "path");
-
-  placeholderSVG.setAttribute("height", "24px");
-  placeholderSVG.setAttribute("viewBox", "0 0 24 24");
-  placeholderSVG.setAttribute("width", "24px");
-  placeholderSVG.setAttribute("fill", "#FFFFFF");
-  placeholderSVGPath.setAttribute("d", "M0 0h24v24H0V0z");
-  placeholderSVGPath.setAttribute("fill", "none");
-  placeholderSVGPath2.setAttribute("d", folderSVGPath);
-
-  placeholderSVG.append(placeholderSVGPath, placeholderSVGPath2);
-
-  return placeholderSVG;
-}
-
-export function createFolderIconPlaceholderX(isGridView: boolean): HTMLDivElement {
+export function createFolderIconPlaceholder(isGridView: boolean): HTMLDivElement {
   const placeholder = document.createElement("div");
   const placeholderSVG = document.createElementNS("http://www.w3.org/2000/svg", "svg");
   const placeholderSVGPath = document.createElementNS("http://www.w3.org/2000/svg", "path");
@@ -77,7 +41,7 @@ export function createFolderIconPlaceholderX(isGridView: boolean): HTMLDivElemen
   placeholderSVG.setAttribute("viewBox", "0 0 24 24");
   placeholderSVG.setAttribute("aria-hidden", "true");
   placeholderSVG.setAttribute("role", "img");
-  placeholderSVGPath.setAttribute("d", folderSVGPathX);
+  placeholderSVGPath.setAttribute("d", folderSVGPath);
 
   placeholderSVG.appendChild(placeholderSVGPath);
   placeholder.appendChild(placeholderSVG);

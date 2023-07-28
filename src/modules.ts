@@ -1,4 +1,4 @@
-import { storageItemPrefix, rootlistXClass } from "./constants";
+import { storageItemPrefix, rootlistClass } from "./constants";
 import {
   createFilePicker,
   fetchFolderIDsAsync,
@@ -10,7 +10,7 @@ import {
   getFolderIDFrom,
   getPlaylistsContainer,
 } from "./utils";
-import { isLibraryX, hasImage } from "./helpers";
+import { hasImage } from "./helpers";
 
 function setFolderImage(id: string, imageBase64: string): void {
   localStorage.setItem(`${storageItemPrefix}:${id}`, imageBase64);
@@ -101,37 +101,30 @@ export function createContextMenus(): void {
 
 export function trackPlaylistsChanges(): void {
   let playlistsContainer = getPlaylistsContainer();
-  let playlistsContainerObserverConfig: MutationObserverInit;
-  let playlistsContainerObserver: MutationObserver;
+  const playlistsContainerObserverConfig = { childList: true };
+  const playlistsContainerObserver = new MutationObserver(updateFolderImages);
 
-  if (isLibraryX()) {
-    playlistsContainerObserverConfig = { childList: true };
-    playlistsContainerObserver = new MutationObserver(updateFolderImages);
-    const rootlist = document.getElementsByClassName(rootlistXClass)[0];
-    const rootlistObserverConfig = { childList: true, subtree: true };
-    // eslint-disable-next-line @typescript-eslint/no-use-before-define
-    const rootlistObserver = new MutationObserver(handleRootlistMutation);
+  const rootlist = document.getElementsByClassName(rootlistClass)[0];
+  const rootlistObserverConfig = { childList: true, subtree: true };
+  // eslint-disable-next-line @typescript-eslint/no-use-before-define
+  const rootlistObserver = new MutationObserver(handleRootlistMutation);
 
-    // eslint-disable-next-line no-inner-declarations
-    function handleRootlistMutation(): void {
-      if (!playlistsContainer?.isConnected) {
-        playlistsContainer = getPlaylistsContainer();
-        if (!playlistsContainer) {
-          setTimeout(handleRootlistMutation, 300);
-          return;
-        }
-        playlistsContainerObserver.observe(
-          playlistsContainer as Node,
-          playlistsContainerObserverConfig,
-        );
+  // eslint-disable-next-line no-inner-declarations
+  function handleRootlistMutation(): void {
+    if (!playlistsContainer?.isConnected) {
+      playlistsContainer = getPlaylistsContainer();
+      if (!playlistsContainer) {
+        setTimeout(handleRootlistMutation, 300);
+        return;
       }
+      playlistsContainerObserver.observe(
+        playlistsContainer as Node,
+        playlistsContainerObserverConfig,
+      );
     }
-
-    rootlistObserver.observe(rootlist, rootlistObserverConfig);
-  } else {
-    playlistsContainerObserverConfig = { childList: true, subtree: true };
-    playlistsContainerObserver = new MutationObserver(updateFolderImages);
   }
+
+  rootlistObserver.observe(rootlist, rootlistObserverConfig);
 
   playlistsContainerObserver.observe(playlistsContainer as Node, playlistsContainerObserverConfig);
 }

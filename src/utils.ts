@@ -1,9 +1,8 @@
 import FolderImageData from "./types/folderImageData";
 import { RootlistRow, RootlistRoot, RootlistFolder } from "./types/rootlist";
 import {
-  imageContainerXSelector,
-  imageContainerXCardSelector,
-  playlistIconsExtensionSelector,
+  imageContainerSelector,
+  imageContainerCardSelector,
   storageItemPrefix,
   rootlistAPIURL,
   playlistsContainerGridSelector,
@@ -15,42 +14,31 @@ import {
   getAllFolderElements,
   isPlaylistsInGridView,
   createFolderIconPlaceholder,
-  createFolderIconPlaceholderX,
-  isLibraryX,
 } from "./helpers";
 
 export function getPlaylistsContainer(): Element | null {
-  if (isLibraryX()) {
-    if (isPlaylistsInGridView()) return document.querySelector(playlistsContainerGridSelector);
-  }
-  return document.querySelector(playlistsContainerSelector);
+  return document.querySelector(
+    isPlaylistsInGridView() ? playlistsContainerGridSelector : playlistsContainerSelector,
+  );
 }
 
 export function getFolderElement(id: string): HTMLLIElement | null {
   return document.querySelector(
-    isLibraryX()
-      ? `li.main-useDropTarget-folder:has(div[aria-labelledby *= "folder:${id}"])`
-      : `li.main-rootlist-rootlistItem:has(.main-rootlist-rootlistItemLink[href *= "folder/${id}"])`,
+    `li.main-useDropTarget-folder:has(div[aria-labelledby *= "folder:${id}"])`,
   );
 }
 
 export function getFolderImageContainer(inputElement: Element): Element | null {
-  if (isLibraryX())
-    return inputElement.querySelector(
-      isPlaylistsInGridView() ? imageContainerXCardSelector : imageContainerXSelector,
-    );
-  return inputElement.querySelector(playlistIconsExtensionSelector);
+  return inputElement.querySelector(
+    isPlaylistsInGridView() ? imageContainerCardSelector : imageContainerSelector,
+  );
 }
 
 export function getFolderIDFrom(input: Element | string): string | undefined {
   if (input instanceof Element) {
     let id = getFolderIDFromElement(input);
     if (!id) {
-      const target: HTMLElement | null = input.querySelector(
-        isLibraryX()
-          ? 'div[aria-labelledby *= "folder:"]'
-          : 'a.main-rootlist-rootlistItemLink[href *= "folder/"]',
-      );
+      const target: HTMLElement | null = input.querySelector('div[aria-labelledby *= "folder:"]');
       if (target) id = getFolderIDFromElement(target);
     }
     return id;
@@ -87,17 +75,12 @@ export function getFolderImagesData(): FolderImageData[] {
 
 export function addImageToFolderElement(imageContainer: Element, imageBase64: string): void {
   const image = document.createElement("img");
-  if (isLibraryX()) {
-    const isCardView = imageContainer.className === "";
-    image.classList.add(
-      "main-image-image",
-      "main-image-loaded",
-      isCardView ? "main-cardImage-image" : "x-entityImage-image",
-    );
-  } else {
-    image.style.width = "100%";
-    image.style.height = "100%";
-  }
+  const isCardView = imageContainer.className === "";
+  image.classList.add(
+    "main-image-image",
+    "main-image-loaded",
+    isCardView ? "main-cardImage-image" : "x-entityImage-image",
+  );
   image.src = imageBase64;
   cleanUpFolderImageContainer(imageContainer);
   imageContainer.prepend(image);
@@ -105,9 +88,7 @@ export function addImageToFolderElement(imageContainer: Element, imageBase64: st
 
 export function addPlaceholderToFolderElement(imageContainer: Element): void {
   const isGridView = imageContainer.className === "";
-  const placeholder = isLibraryX()
-    ? createFolderIconPlaceholderX(isGridView)
-    : createFolderIconPlaceholder();
+  const placeholder = createFolderIconPlaceholder(isGridView);
   cleanUpFolderImageContainer(imageContainer);
   imageContainer.prepend(placeholder);
 }
