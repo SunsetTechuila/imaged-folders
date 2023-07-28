@@ -106,3 +106,36 @@ export async function fetchFolderIDsAsync(): Promise<string[]> {
   result.rows?.forEach((row) => processRowsRecursive(row));
   return IDs;
 }
+
+export async function optimizeImageAsync(inputImageBase64: string): Promise<string> {
+  return new Promise((resolve) => {
+    const image = new Image();
+
+    image.onload = () => {
+      const maxSize = 236;
+      let { width, height } = image;
+
+      if (width > height) {
+        if (width > maxSize) {
+          height *= maxSize / width;
+          width = maxSize;
+        }
+      } else if (height > maxSize) {
+        width *= maxSize / height;
+        height = maxSize;
+      }
+
+      const canvas = document.createElement("canvas");
+      canvas.width = width;
+      canvas.height = height;
+      const context = canvas.getContext("2d") as CanvasRenderingContext2D;
+      context.drawImage(image, 0, 0, width, height);
+
+      const optimizedImage = canvas.toDataURL("image/png");
+      canvas.remove()
+      resolve(optimizedImage);
+    };
+
+    image.src = inputImageBase64;
+  });
+}

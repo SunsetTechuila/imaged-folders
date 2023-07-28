@@ -56,7 +56,6 @@ export function createFilePicker(): [HTMLFormElement, HTMLInputElement] {
     "image/avif",
     "image/gif",
     "image/png",
-    "image/svg+xml",
     "image/webp",
   ].join(",");
   filePickerForm.appendChild(filePickerInput);

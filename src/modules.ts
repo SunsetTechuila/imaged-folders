@@ -9,6 +9,7 @@ import {
   addPlaceholderToFolderElement,
   getFolderIDFrom,
   getPlaylistsContainer,
+  optimizeImageAsync,
 } from "./utils";
 
 function setFolderImage(id: string, imageBase64: string): void {
@@ -63,9 +64,10 @@ export function createContextMenus(): void {
   filePickerInput.onchange = () => {
     if (!filePickerInput.files?.length) return;
     const reader = new FileReader();
-    reader.onload = (event) => {
+    reader.onload = async (event) => {
       try {
-        setFolderImage(filePickerInput.id, event.target?.result as string);
+        const imageBase64 = await optimizeImageAsync(event.target?.result as string);
+        setFolderImage(filePickerInput.id, imageBase64);
       } catch (error) {
         // eslint-disable-next-line no-console
         console.log(error);
