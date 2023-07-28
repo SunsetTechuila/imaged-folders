@@ -3,6 +3,7 @@ import {
   folderElementSelector,
   folderSVGPath,
   folderSVGPathX,
+  storageItemPrefix
 } from "./constants";
 
 export function isLibraryX(): boolean {
@@ -82,4 +83,8 @@ export function createFolderIconPlaceholderX(isGridView: boolean): HTMLDivElemen
   placeholder.appendChild(placeholderSVG);
 
   return placeholder;
+}
+
+export function hasImage(id: string): boolean {
+  return Boolean(localStorage.getItem(`${storageItemPrefix}:${id}`));
 }

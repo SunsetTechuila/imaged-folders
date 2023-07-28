@@ -1,14 +1,24 @@
-
 import {
   cleanUpStorageAsync,
   createContextMenus,
   updateFolderImages,
   trackPlaylistsChanges,
-  waitForInitAsync,
 } from "./modules";
+import { getPlaylistsContainer } from "./utils";
 
 export default async function main() {
-  await waitForInitAsync();
+  if (
+    !Spicetify?.Locale ||
+    !Spicetify?.URI ||
+    !Spicetify?.ContextMenu ||
+    !Spicetify?.CosmosAsync ||
+    !Spicetify?.Platform?.LocalStorageAPI ||
+    !getPlaylistsContainer()
+  ) {
+    setTimeout(main, 300);
+    return;
+  }
+
   cleanUpStorageAsync();
   updateFolderImages();
   createContextMenus();

@@ -805,7 +805,7 @@ declare namespace Spicetify {
          * @param play Toggles autoplay
          * @return The track URI.
          */
-        static trackURI(id: string, anchor: string, context?: string, play: boolean): URI;
+        static trackURI(id: string, anchor: string, context?: string, play?: boolean): URI;
 
         /**
          * Creates a new 'user-toplist' type URI.
@@ -963,6 +963,8 @@ declare namespace Spicetify {
     const React: any;
     /** React DOM instance to render and mount components */
     const ReactDOM: any;
+    /** React DOM Server instance to render components to string */
+    const ReactDOMServer: any;
 
     /** Stock React components exposed from Spotify library */
     namespace ReactComponent {
@@ -1393,6 +1395,7 @@ declare namespace Spicetify {
         const PodcastShowMenu: any;
         const ArtistMenu: any;
         const PlaylistMenu: any;
+        const TrackMenu: any;
         /**
          * Component to display tooltip when hovering over element
          * Useful for accessibility
@@ -1876,17 +1879,17 @@ declare namespace Spicetify {
         h: number;
         s: number;
         l: number;
-    };
+    }
     interface hsv {
         h: number;
         s: number;
         v: number;
-    };
+    }
     interface rgb {
         r: number;
         g: number;
         b: number;
-    };
+    }
     type CSSColors = "HEX" | "HEXA" | "HSL" | "HSLA" | "RGB" | "RGBA";
     /**
      * Spotify's internal color class
@@ -1938,5 +1941,153 @@ declare namespace Spicetify {
          * Return RGBA representation of the color
          */
         toString(): string;
+    }
+
+    /**
+     * Spotify internal library for localization
+     */
+    namespace Locale {
+        /**
+         * Relative time format
+         */
+        const _relativeTimeFormat: Intl.RelativeTimeFormat | null;
+        /**
+         * Registered date time formats in the current session
+         */
+        const _dateTimeFormats: Record<string, Intl.DateTimeFormat>;
+        /**
+         * Current locale of the client
+         */
+        const _locale: string;
+        const _urlLocale: string;
+        /**
+         * Collection of supported locales
+         */
+        const _supportedLocales: Record<string, string>;
+        /**
+         * Dictionary of localized strings
+         */
+        const _dictionary: Record<string, string | { one: string, other: string }>;
+
+        /**
+         * Format date into locale string
+         * 
+         * @param date Date to format
+         * @param options Options to use
+         * @return Localized string
+         * @throws {RangeError} If the date is invalid
+         */
+        function formatDate(date: number | Date | undefined, options?: Intl.DateTimeFormatOptions): string;
+        /**
+         * Format time into relative locale string
+         * 
+         * @param date Date to format
+         * @param options Options to use
+         * @return Localized string
+         * @throws {RangeError} If the date is invalid
+         */
+        function formatRelativeTime(date: number | Date | undefined, options?: Intl.DateTimeFormatOptions): string;
+        /**
+         * Format number into locale string
+         * 
+         * @param number Number to format
+         * @param options Options to use
+         * @return Localized string
+         */
+        function formatNumber(number: number, options?: Intl.NumberFormatOptions): string;
+        /**
+         * Format number into compact locale string
+         * 
+         * @param number Number to format
+         * @return Localized string
+         */
+        function formatNumberCompact(number: number): string;
+        /**
+         * Get localized string
+         * 
+         * @param key Key of the string
+         * @param children React children to pass the string into
+         * @return Localized string or React Fragment of the children
+         */
+        function get(key: string, ...children: React.ReactNode[]): string | React.ReactNode;
+        /**
+         * Get date time format of the passed options.
+         * 
+         * Function calls here will register to the `_dateTimeFormats` dictionary.
+         * 
+         * @param options Options to use
+         * @return Date time format
+         */
+        function getDateTimeFormat(options?: Intl.DateTimeFormatOptions): Intl.DateTimeFormat;
+        /**
+         * Get the current locale dictionary
+         * 
+         * @return Current locale dictionary
+         */
+        function getDictionary(): Record<string, string | { one: string, other: string }>;
+        /**
+         * Get the current locale
+         * 
+         * @return Current locale
+         */
+        function getLocale(): string;
+        /**
+         * Get the current locale code for Smartling
+         * 
+         * @return Current locale code for Smartling
+         */
+        function getSmartlingLocale(): string;
+        /**
+         * Get the current locale code for URL
+         * 
+         * @return Current locale code for URL
+         */
+        function getUrlLocale(): string;
+        /**
+         * Get the current relative time format
+         * 
+         * @return Current relative time format
+         */
+        function getRelativeTimeFormat(): Intl.RelativeTimeFormat;
+        /**
+         * Get the separator for the current locale
+         * 
+         * @return Separator for the current locale
+         */
+        function getSeparator(): string;
+        /**
+         * Set the current locale
+         * 
+         * This will clear all previously set relative time formats and key-value pairs.
+         * 
+         * @param locale Locale to set
+         */
+        function setLocale(locale: string): void;
+        /**
+         * Set the current locale code for URL
+         * 
+         * @param locale Locale code for URL to set
+         */
+        function setUrlLocale(locale: string): void;
+        /**
+         * Set the dictionary for the current locale
+         * 
+         * @param dictionary Dictionary to set
+         */
+        function setDictionary(dictionary: Record<string, string | { one: string, other: string }>): void;
+        /**
+         * Transform text into locale lowercase
+         * 
+         * @param text Text to transform
+         * @return Locale lowercase text
+         */
+        function toLocaleLowerCase(text: string): string;
+        /**
+         * Transform text into locale uppercase
+         * 
+         * @param text Text to transform
+         * @return Locale uppercase text
+         */
+        function toLocaleUpperCase(text: string): string;
     }
 }

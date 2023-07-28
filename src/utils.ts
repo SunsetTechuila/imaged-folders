@@ -1,3 +1,5 @@
+import FolderImageData from "./types/folderImageData";
+import { RootlistRow, RootlistRoot, RootlistFolder } from "./types/rootlist";
 import {
   imageContainerXSelector,
   imageContainerXCardSelector,
@@ -16,7 +18,6 @@ import {
   createFolderIconPlaceholderX,
   isLibraryX,
 } from "./helpers";
-import { RootlistRow, RootlistRoot, RootlistFolder } from "./types/rootlist";
 
 export function getPlaylistsContainer(): Element | null {
   if (isLibraryX()) {
@@ -58,21 +59,27 @@ export function getFolderIDFrom(input: Element | string): string | undefined {
   return Spicetify.URI.from(input)?.id;
 }
 
-export function getFolderImagesData(): { imageContainer: HTMLElement; imageBase64: string }[] {
-  const foldersImageData: { imageContainer: HTMLElement; imageBase64: string }[] = [];
+export function getFolderImageDataFromElement(inputElement: Element): FolderImageData | null {
+  const id = getFolderIDFrom(inputElement);
+  if (id) {
+    const imageBase64 = localStorage.getItem(`${storageItemPrefix}:${id}`);
+    if (imageBase64) {
+      const imageContainer = getFolderImageContainer(inputElement);
+      if (imageContainer) {
+        return { imageContainer: imageContainer as HTMLElement, imageBase64 };
+      }
+    }
+  }
+  return null;
+}
+
+export function getFolderImagesData(): FolderImageData[] {
+  const foldersImageData: FolderImageData[] = [];
   const folderElements = getAllFolderElements();
 
   for (let i = 0, max = folderElements.length; i < max; i += 1) {
-    const id = getFolderIDFrom(folderElements[i]);
-    if (id) {
-      const imageBase64 = localStorage.getItem(`${storageItemPrefix}:${id}`);
-      if (imageBase64) {
-        const imageContainer = getFolderImageContainer(folderElements[i]);
-        if (imageContainer) {
-          foldersImageData.push({ imageContainer: imageContainer as HTMLElement, imageBase64 });
-        }
-      }
-    }
+    const folderImageData = getFolderImageDataFromElement(folderElements[i]);
+    if (folderImageData) foldersImageData.push(folderImageData);
   }
 
   return foldersImageData;
@@ -139,8 +146,4 @@ export async function fetchFolderIDsAsync(): Promise<string[]> {
 
   result.rows?.forEach((row) => processRowsRecursive(row));
   return IDs;
-}
-
-export function hasImage(id: string): boolean {
-  return Boolean(localStorage.getItem(`${storageItemPrefix}:${id}`));
 }

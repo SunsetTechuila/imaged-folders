@@ -8,9 +8,9 @@ import {
   getFolderImageContainer,
   addPlaceholderToFolderElement,
   getFolderIDFrom,
-  hasImage,
   getPlaylistsContainer,
 } from "./utils";
+import { isLibraryX, hasImage } from "./helpers";
 
 function setFolderImage(id: string, imageBase64: string): void {
   localStorage.setItem(`${storageItemPrefix}:${id}`, imageBase64);
@@ -53,7 +53,6 @@ export function updateFolderImages(): void {
 }
 
 export function createContextMenus(): void {
-  // @ts-ignore
   const { ContextMenu, Locale } = Spicetify;
   const { isFolder } = Spicetify.URI;
   const removePhotoText = Locale.get("playlist.edit-details.remove-photo");
@@ -100,51 +99,39 @@ export function createContextMenus(): void {
   ).register();
 }
 
-export async function waitForInitAsync(): Promise<unknown> {
-  return new Promise((resolve) => {
-    const checkInit = () => {
-      if (
-        // @ts-ignore
-        Spicetify?.Locale &&
-        Spicetify?.URI &&
-        Spicetify?.ContextMenu &&
-        Spicetify?.CosmosAsync &&
-        Spicetify?.Platform?.LocalStorageAPI &&
-        getPlaylistsContainer()
-      ) {
-        resolve(true);
-      } else {
-        setTimeout(checkInit, 300);
-      }
-    };
-    checkInit();
-  });
-}
-
 export function trackPlaylistsChanges(): void {
   let playlistsContainer = getPlaylistsContainer();
-  const playlistsContainerObserverConfig = { childList: true };
-  const playlistsContainerObserver = new MutationObserver(updateFolderImages);
+  let playlistsContainerObserverConfig: MutationObserverInit;
+  let playlistsContainerObserver: MutationObserver;
 
-  const rootlist = document.getElementsByClassName(rootlistXClass)[0];
-  const rootlistObserverConfig = { childList: true, subtree: true };
-  // eslint-disable-next-line @typescript-eslint/no-use-before-define
-  const rootlistObserver = new MutationObserver(handleRootlistMutation);
+  if (isLibraryX()) {
+    playlistsContainerObserverConfig = { childList: true };
+    playlistsContainerObserver = new MutationObserver(updateFolderImages);
+    const rootlist = document.getElementsByClassName(rootlistXClass)[0];
+    const rootlistObserverConfig = { childList: true, subtree: true };
+    // eslint-disable-next-line @typescript-eslint/no-use-before-define
+    const rootlistObserver = new MutationObserver(handleRootlistMutation);
 
-  function handleRootlistMutation(): void {
-    if (!playlistsContainer?.isConnected) {
-      playlistsContainer = getPlaylistsContainer();
-      if (!playlistsContainer) {
-        setTimeout(handleRootlistMutation, 300);
-        return;
+    // eslint-disable-next-line no-inner-declarations
+    function handleRootlistMutation(): void {
+      if (!playlistsContainer?.isConnected) {
+        playlistsContainer = getPlaylistsContainer();
+        if (!playlistsContainer) {
+          setTimeout(handleRootlistMutation, 300);
+          return;
+        }
+        playlistsContainerObserver.observe(
+          playlistsContainer as Node,
+          playlistsContainerObserverConfig,
+        );
       }
-      playlistsContainerObserver.observe(
-        playlistsContainer as Node,
-        playlistsContainerObserverConfig,
-      );
     }
+
+    rootlistObserver.observe(rootlist, rootlistObserverConfig);
+  } else {
+    playlistsContainerObserverConfig = { childList: true, subtree: true };
+    playlistsContainerObserver = new MutationObserver(updateFolderImages);
   }
 
-  rootlistObserver.observe(rootlist, rootlistObserverConfig);
   playlistsContainerObserver.observe(playlistsContainer as Node, playlistsContainerObserverConfig);
 }
