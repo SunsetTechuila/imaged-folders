@@ -6,7 +6,7 @@ import {
 } from "./modules";
 import { getPlaylistsContainer } from "./utils";
 
-export default async function main() {
+export default function main() {
   if (
     !Spicetify?.Locale ||
     !Spicetify?.URI ||
