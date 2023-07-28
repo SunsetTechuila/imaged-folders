@@ -20,7 +20,7 @@ export default function main() {
   }
 
   cleanUpStorageAsync();
-  updateFolderImages();
   createContextMenus();
   trackPlaylistsChanges();
+  updateFolderImages();
 }

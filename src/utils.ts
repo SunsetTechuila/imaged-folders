@@ -11,7 +11,6 @@ import {
 } from "./constants";
 import {
   cleanUpFolderImageContainer,
-  getFolderIDFromElement,
   isPlaylistsInGridView,
   createFolderIconPlaceholder,
 } from "./helpers";
@@ -36,12 +35,12 @@ export function getFolderImageContainer(inputElement: Element): Element | null {
 
 export function getFolderIDFrom(input: Element | string): string | undefined {
   if (input instanceof Element) {
-    let id = getFolderIDFromElement(input);
-    if (!id) {
-      const target: HTMLElement | null = input.querySelector('div[aria-labelledby *= "folder:"]');
-      if (target) id = getFolderIDFromElement(target);
+    const target = input.querySelector('div[aria-labelledby *= "folder:"]');
+    if (target) {
+      const match = target.getAttribute("aria-labelledby")?.match(/folder:(\w+)$/);
+      if (match) return match[1];
     }
-    return id;
+    return undefined;
   }
 
   return Spicetify.URI.from(input)?.id;
@@ -91,27 +90,6 @@ export function addPlaceholderToFolderElement(imageContainer: Element): void {
   const placeholder = createFolderIconPlaceholder(isGridView);
   cleanUpFolderImageContainer(imageContainer);
   imageContainer.prepend(placeholder);
-}
-
-export function createFilePicker(): [HTMLFormElement, HTMLInputElement] {
-  const filePickerForm = document.createElement("form");
-  filePickerForm.setAttribute("aria-hidden", "true");
-
-  const filePickerInput = document.createElement("input");
-  filePickerInput.classList.add("hidden-visually");
-  filePickerInput.setAttribute("type", "file");
-  filePickerInput.accept = [
-    "image/jpeg",
-    "image/apng",
-    "image/avif",
-    "image/gif",
-    "image/png",
-    "image/svg+xml",
-    "image/webp",
-  ].join(",");
-  filePickerForm.appendChild(filePickerInput);
-
-  return [filePickerForm, filePickerInput];
 }
 
 export async function fetchFolderIDsAsync(): Promise<string[]> {

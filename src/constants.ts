@@ -5,7 +5,7 @@ export const rootlistAPIURL = "sp://core-playlist/v1/rootlist";
 
 export const storageItemPrefix = "folder-image";
 
-export const rootlistClass = "main-yourLibraryX-libraryRootlist";
+export const rootlistSelector = ".main-yourLibraryX-libraryRootlist > div";
 
 export const folderElementSelector =
   'li.main-useDropTarget-folder:has(div[aria-labelledby *= "folder:"])';

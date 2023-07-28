@@ -1,14 +1,7 @@
 import { folderSVGPath, storageItemPrefix } from "./constants";
 
-export function getFolderIDFromElement(inputElement: Element): string | undefined {
-  const match = inputElement.getAttribute("aria-labelledby")?.match(/folder:(\w+)$/);
-  if (match) return match[1];
-  return undefined;
-}
-
-export function cleanUpFolderImageContainer(container: Element): void {
-  container.getElementsByClassName("main-image-image")[0]?.remove();
-  container.querySelector('div[class *= "imagePlaceholder"]')?.remove();
+export function hasImage(id: string): boolean {
+  return Boolean(localStorage.getItem(`${storageItemPrefix}:${id}`));
 }
 
 export function isPlaylistsInGridView(): boolean {
@@ -17,6 +10,11 @@ export function isPlaylistsInGridView(): boolean {
     Boolean(LocalStorageAPI.getItem("items-view")) &&
     LocalStorageAPI.getItem("ylx-sidebar-state") === 2
   );
+}
+
+export function cleanUpFolderImageContainer(container: Element): void {
+  container.getElementsByClassName("main-image-image")[0]?.remove();
+  container.querySelector('div[class *= "imagePlaceholder"]')?.remove();
 }
 
 export function createFolderIconPlaceholder(isGridView: boolean): HTMLDivElement {
@@ -45,6 +43,23 @@ export function createFolderIconPlaceholder(isGridView: boolean): HTMLDivElement
   return placeholder;
 }
 
-export function hasImage(id: string): boolean {
-  return Boolean(localStorage.getItem(`${storageItemPrefix}:${id}`));
+export function createFilePicker(): [HTMLFormElement, HTMLInputElement] {
+  const filePickerForm = document.createElement("form");
+  filePickerForm.setAttribute("aria-hidden", "true");
+
+  const filePickerInput = document.createElement("input");
+  filePickerInput.classList.add("hidden-visually");
+  filePickerInput.setAttribute("type", "file");
+  filePickerInput.accept = [
+    "image/jpeg",
+    "image/apng",
+    "image/avif",
+    "image/gif",
+    "image/png",
+    "image/svg+xml",
+    "image/webp",
+  ].join(",");
+  filePickerForm.appendChild(filePickerInput);
+
+  return [filePickerForm, filePickerInput];
 }

@@ -1,6 +1,6 @@
-import { storageItemPrefix, rootlistClass } from "./constants";
+import { storageItemPrefix, rootlistSelector } from "./constants";
+import { hasImage, createFilePicker } from "./helpers";
 import {
-  createFilePicker,
   fetchFolderIDsAsync,
   addImageToFolderElement,
   getFolderElement,
@@ -10,7 +10,6 @@ import {
   getFolderIDFrom,
   getPlaylistsContainer,
 } from "./utils";
-import { hasImage } from "./helpers";
 
 function setFolderImage(id: string, imageBase64: string): void {
   localStorage.setItem(`${storageItemPrefix}:${id}`, imageBase64);
@@ -67,7 +66,9 @@ export function createContextMenus(): void {
     reader.onload = (event) => {
       try {
         setFolderImage(filePickerInput.id, event.target?.result as string);
-      } catch {
+      } catch (error) {
+        // eslint-disable-next-line no-console
+        console.log(error);
         Spicetify.showNotification(notificationText);
       }
     };
@@ -103,13 +104,10 @@ export function trackPlaylistsChanges(): void {
   let playlistsContainer = getPlaylistsContainer();
   const playlistsContainerObserverConfig = { childList: true };
   const playlistsContainerObserver = new MutationObserver(updateFolderImages);
-
-  const rootlist = document.getElementsByClassName(rootlistClass)[0];
-  const rootlistObserverConfig = { childList: true, subtree: true };
+  const rootlist = document.querySelector(rootlistSelector);
   // eslint-disable-next-line @typescript-eslint/no-use-before-define
   const rootlistObserver = new MutationObserver(handleRootlistMutation);
 
-  // eslint-disable-next-line no-inner-declarations
   function handleRootlistMutation(): void {
     if (!playlistsContainer?.isConnected) {
       playlistsContainer = getPlaylistsContainer();
@@ -124,7 +122,6 @@ export function trackPlaylistsChanges(): void {
     }
   }
 
-  rootlistObserver.observe(rootlist, rootlistObserverConfig);
-
+  rootlistObserver.observe(rootlist as Node, { childList: true });
   playlistsContainerObserver.observe(playlistsContainer as Node, playlistsContainerObserverConfig);
 }
