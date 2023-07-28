@@ -1,8 +1,4 @@
-import { folderElementSelector, folderSVGPath, storageItemPrefix } from "./constants";
-
-export function getAllFolderElements(): NodeListOf<HTMLLIElement> {
-  return document.querySelectorAll(folderElementSelector);
-}
+import { folderSVGPath, storageItemPrefix } from "./constants";
 
 export function getFolderIDFromElement(inputElement: Element): string | undefined {
   const match = inputElement.getAttribute("aria-labelledby")?.match(/folder:(\w+)$/);

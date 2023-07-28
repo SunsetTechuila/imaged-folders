@@ -7,11 +7,11 @@ import {
   rootlistAPIURL,
   playlistsContainerGridSelector,
   playlistsContainerSelector,
+  folderElementSelector,
 } from "./constants";
 import {
   cleanUpFolderImageContainer,
   getFolderIDFromElement,
-  getAllFolderElements,
   isPlaylistsInGridView,
   createFolderIconPlaceholder,
 } from "./helpers";
@@ -63,7 +63,7 @@ export function getFolderImageDataFromElement(inputElement: Element): FolderImag
 
 export function getFolderImagesData(): FolderImageData[] {
   const foldersImageData: FolderImageData[] = [];
-  const folderElements = getAllFolderElements();
+  const folderElements = document.querySelectorAll(folderElementSelector);
 
   for (let i = 0, max = folderElements.length; i < max; i += 1) {
     const folderImageData = getFolderImageDataFromElement(folderElements[i]);
