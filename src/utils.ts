@@ -8,6 +8,10 @@ import {
   playlistsContainerGridSelector,
   playlistsContainerSelector,
   folderElementSelector,
+  folderIdElementSelector,
+  imageCardClass,
+  imageClass,
+  IdAttribute,
 } from "./constants";
 import {
   cleanUpFolderImageContainer,
@@ -22,9 +26,7 @@ export function getPlaylistsContainer(): Element | null {
 }
 
 export function getFolderElement(id: string): HTMLLIElement | null {
-  return document.querySelector(
-    `li.main-useDropTarget-folder:has(div[aria-labelledby *= "folder:${id}"])`,
-  );
+  return document.querySelector(folderElementSelector.replace('folder:"', `folder:${id}"`));
 }
 
 export function getFolderImageContainer(inputElement: Element): Element | null {
@@ -33,11 +35,11 @@ export function getFolderImageContainer(inputElement: Element): Element | null {
   );
 }
 
-export function getFolderIDFrom(input: Element | string): string | undefined {
+export function getFolderIdFrom(input: Element | string): string | undefined {
   if (input instanceof Element) {
-    const target = input.querySelector('div[aria-labelledby *= "folder:"]');
+    const target = input.querySelector(folderIdElementSelector);
     if (target) {
-      const match = target.getAttribute("aria-labelledby")?.match(/folder:(\w+)$/);
+      const match = target.getAttribute(IdAttribute)?.match(/folder:(\w+)$/);
       if (match) return match[1];
     }
     return undefined;
@@ -47,7 +49,7 @@ export function getFolderIDFrom(input: Element | string): string | undefined {
 }
 
 export function getFolderImageDataFromElement(inputElement: Element): FolderImageData | null {
-  const id = getFolderIDFrom(inputElement);
+  const id = getFolderIdFrom(inputElement);
   if (id) {
     const imageBase64 = localStorage.getItem(`${storageItemPrefix}:${id}`);
     if (imageBase64) {
@@ -74,11 +76,10 @@ export function getFolderImagesData(): FolderImageData[] {
 
 export function addImageToFolderElement(imageContainer: Element, imageBase64: string): void {
   const image = document.createElement("img");
-  const isCardView = imageContainer.className === "";
   image.classList.add(
     "main-image-image",
     "main-image-loaded",
-    isCardView ? "main-cardImage-image" : "x-entityImage-image",
+    isPlaylistsInGridView() ? imageCardClass : imageClass,
   );
   image.src = imageBase64;
   cleanUpFolderImageContainer(imageContainer);
@@ -86,8 +87,7 @@ export function addImageToFolderElement(imageContainer: Element, imageBase64: st
 }
 
 export function addPlaceholderToFolderElement(imageContainer: Element): void {
-  const isGridView = imageContainer.className === "";
-  const placeholder = createFolderIconPlaceholder(isGridView);
+  const placeholder = createFolderIconPlaceholder();
   cleanUpFolderImageContainer(imageContainer);
   imageContainer.prepend(placeholder);
 }
@@ -112,7 +112,7 @@ export async function optimizeImageAsync(inputImageBase64: string): Promise<stri
     const image = new Image();
 
     image.onload = () => {
-      const maxSize = 236;
+      const maxSize = 354;
       let { width, height } = image;
 
       if (width > height) {
@@ -132,7 +132,7 @@ export async function optimizeImageAsync(inputImageBase64: string): Promise<stri
       context.drawImage(image, 0, 0, width, height);
 
       const optimizedImage = canvas.toDataURL("image/png");
-      canvas.remove()
+      canvas.remove();
       resolve(optimizedImage);
     };
 

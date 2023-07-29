@@ -1,5 +1,11 @@
-import { storageItemPrefix, rootlistSelector } from "./constants";
-import { hasImage, createFilePicker } from "./helpers";
+import { hasImage, createFilePicker, hasImageElement } from "./helpers";
+import {
+  storageItemPrefix,
+  rootlistSelector,
+  localeChoosePhotoString,
+  localeFailNotificationString,
+  localeRemovePhotoString,
+} from "./constants";
 import {
   fetchFolderIDsAsync,
   addImageToFolderElement,
@@ -7,7 +13,7 @@ import {
   getFolderImagesData,
   getFolderImageContainer,
   addPlaceholderToFolderElement,
-  getFolderIDFrom,
+  getFolderIdFrom,
   getPlaylistsContainer,
   optimizeImageAsync,
 } from "./utils";
@@ -48,16 +54,17 @@ export async function cleanUpStorageAsync(): Promise<void> {
 export function updateFolderImages(): void {
   const foldersImageData = getFolderImagesData();
   for (let i = 0, max = foldersImageData.length; i < max; i += 1) {
-    addImageToFolderElement(foldersImageData[i].imageContainer, foldersImageData[i].imageBase64);
+    if (!hasImageElement(foldersImageData[i].imageContainer))
+      addImageToFolderElement(foldersImageData[i].imageContainer, foldersImageData[i].imageBase64);
   }
 }
 
 export function createContextMenus(): void {
   const { ContextMenu, Locale } = Spicetify;
   const { isFolder } = Spicetify.URI;
-  const removePhotoText = Locale.get("playlist.edit-details.remove-photo");
-  const notificationText = Locale.get("playlist.edit-details.error.file-upload-failed");
-  const addPhotoText = Locale.get("choose_photo");
+  const removePhotoText = Locale.get(localeRemovePhotoString);
+  const failNotificationText = Locale.get(localeFailNotificationString);
+  const choosePhotoText = Locale.get(localeChoosePhotoString);
 
   const [filePickerForm, filePickerInput] = createFilePicker();
   document.body.appendChild(filePickerForm);
@@ -71,7 +78,7 @@ export function createContextMenus(): void {
       } catch (error) {
         // eslint-disable-next-line no-console
         console.log(error);
-        Spicetify.showNotification(notificationText);
+        Spicetify.showNotification(failNotificationText);
       }
     };
     reader.readAsDataURL(filePickerInput.files[0]);
@@ -80,17 +87,17 @@ export function createContextMenus(): void {
   new ContextMenu.Item(
     removePhotoText,
     ([uri]) => {
-      const id = getFolderIDFrom(uri);
+      const id = getFolderIdFrom(uri);
       if (id) removeFolderImage(id);
     },
-    ([uri]) => isFolder(uri) && hasImage(getFolderIDFrom(uri) as string),
+    ([uri]) => isFolder(uri) && hasImage(getFolderIdFrom(uri) as string),
     "x",
   ).register();
 
   new ContextMenu.Item(
-    addPhotoText,
+    choosePhotoText,
     ([uri]) => {
-      const id = getFolderIDFrom(uri);
+      const id = getFolderIdFrom(uri);
       if (id) {
         filePickerInput.id = id;
         filePickerForm.reset();
@@ -106,6 +113,7 @@ export function trackPlaylistsChanges(): void {
   let playlistsContainer = getPlaylistsContainer();
   const playlistsContainerObserverConfig = { childList: true };
   const playlistsContainerObserver = new MutationObserver(updateFolderImages);
+
   const rootlist = document.querySelector(rootlistSelector);
   // eslint-disable-next-line @typescript-eslint/no-use-before-define
   const rootlistObserver = new MutationObserver(handleRootlistMutation);
@@ -117,6 +125,7 @@ export function trackPlaylistsChanges(): void {
         setTimeout(handleRootlistMutation, 300);
         return;
       }
+      updateFolderImages();
       playlistsContainerObserver.observe(
         playlistsContainer as Node,
         playlistsContainerObserverConfig,

@@ -1,14 +1,27 @@
-import { folderSVGPath, storageItemPrefix } from "./constants";
+import {
+  folderSVGPath,
+  storageItemPrefix,
+  imagePlaceholderClass,
+  imagePlaceholderCardClass,
+  SVGClass,
+  SVGImageClass,
+  SVGImageCardClass,
+  imageCardClass,
+  imageClass,
+  playlistsContainerGridSelector,
+} from "./constants";
+
+export function isPlaylistsInGridView(): boolean {
+  return Boolean(document.querySelector(playlistsContainerGridSelector));
+}
 
 export function hasImage(id: string): boolean {
   return Boolean(localStorage.getItem(`${storageItemPrefix}:${id}`));
 }
 
-export function isPlaylistsInGridView(): boolean {
-  const { LocalStorageAPI } = Spicetify.Platform;
-  return (
-    Boolean(LocalStorageAPI.getItem("items-view")) &&
-    LocalStorageAPI.getItem("ylx-sidebar-state") === 2
+export function hasImageElement(inputElement: Element): boolean {
+  return Boolean(
+    inputElement.getElementsByClassName(isPlaylistsInGridView() ? imageCardClass : imageClass)[0],
   );
 }
 
@@ -17,19 +30,15 @@ export function cleanUpFolderImageContainer(container: Element): void {
   container.querySelector('div[class *= "imagePlaceholder"]')?.remove();
 }
 
-export function createFolderIconPlaceholder(isGridView: boolean): HTMLDivElement {
+export function createFolderIconPlaceholder(): HTMLDivElement {
   const placeholder = document.createElement("div");
   const placeholderSVG = document.createElementNS("http://www.w3.org/2000/svg", "svg");
   const placeholderSVGPath = document.createElementNS("http://www.w3.org/2000/svg", "path");
 
+  const isGridView = isPlaylistsInGridView()
   const size = isGridView ? "64" : "24";
-  placeholder.classList.add(
-    isGridView ? "main-card-imagePlaceholder" : "x-entityImage-imagePlaceholder",
-  );
-  placeholderSVG.classList.add(
-    "Svg-sc-ytk21e-0",
-    isGridView ? "Svg-img-textSubdued-64-icon" : "Svg-img-24-icon",
-  );
+  placeholder.classList.add(isGridView ? imagePlaceholderCardClass : imagePlaceholderClass);
+  placeholderSVG.classList.add(SVGClass, isGridView ? SVGImageCardClass : SVGImageClass);
   placeholderSVG.setAttribute("height", `${size}px`);
   placeholderSVG.setAttribute("width", `${size}px`);
   placeholderSVG.setAttribute("viewBox", "0 0 24 24");

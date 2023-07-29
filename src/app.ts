@@ -12,15 +12,14 @@ export default function main() {
     !Spicetify?.URI ||
     !Spicetify?.ContextMenu ||
     !Spicetify?.CosmosAsync ||
-    !Spicetify?.Platform?.LocalStorageAPI ||
     !getPlaylistsContainer()
   ) {
     setTimeout(main, 300);
     return;
   }
 
-  cleanUpStorageAsync();
-  createContextMenus();
-  trackPlaylistsChanges();
   updateFolderImages();
+  trackPlaylistsChanges();
+  createContextMenus();
+  cleanUpStorageAsync();
 }

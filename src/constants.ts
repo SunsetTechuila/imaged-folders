@@ -7,8 +7,10 @@ export const storageItemPrefix = "folder-image";
 
 export const rootlistSelector = ".main-yourLibraryX-libraryRootlist > div";
 
-export const folderElementSelector =
-  'li.main-useDropTarget-folder:has(div[aria-labelledby *= "folder:"])';
+export const IdAttribute = "aria-labelledby"
+
+export const folderIdElementSelector = `div[${IdAttribute} *= "folder:"]`;
+export const folderElementSelector = `li.main-useDropTarget-folder:has(${folderIdElementSelector})`;
 
 export const imageContainerCardSelector = ".main-cardImage-imageWrapper > div";
 export const imageContainerSelector = ".x-entityImage-imageContainer";
@@ -16,3 +18,17 @@ export const imageContainerSelector = ".x-entityImage-imageContainer";
 export const playlistsContainerSelector = "#spicetify-playlist-list > div > div:nth-child(2)";
 export const playlistsContainerGridSelector =
   "#spicetify-playlist-list .main-gridContainer-gridContainer";
+
+export const imageCardClass = "main-cardImage-image";
+export const imageClass = "x-entityImage-image";
+
+export const imagePlaceholderClass = "x-entityImage-imagePlaceholder";
+export const imagePlaceholderCardClass = "main-card-imagePlaceholder";
+
+export const SVGClass = "Svg-sc-ytk21e-0";
+export const SVGImageClass = "Svg-img-24-icon";
+export const SVGImageCardClass = "Svg-img-textSubdued-64-icon";
+
+export const localeRemovePhotoString = "playlist.edit-details.remove-photo";
+export const localeFailNotificationString = "playlist.edit-details.error.file-upload-failed";
+export const localeChoosePhotoString = "choose_photo";
