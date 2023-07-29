@@ -1,14 +1,16 @@
 import {
-  folderSVGPath,
   storageItemPrefix,
+  playlistsContainerGridSelector,
   imagePlaceholderClass,
   imagePlaceholderCardClass,
+  imagePlaceholderSelector,
+  mainImageClass,
+  imageCardClass,
+  imageClass,
+  folderSVGPath,
   SVGClass,
   SVGImageClass,
   SVGImageCardClass,
-  imageCardClass,
-  imageClass,
-  playlistsContainerGridSelector,
 } from "./constants";
 
 export function isPlaylistsInGridView(): boolean {
@@ -26,8 +28,8 @@ export function hasImageElement(inputElement: Element): boolean {
 }
 
 export function cleanUpFolderImageContainer(container: Element): void {
-  container.getElementsByClassName("main-image-image")[0]?.remove();
-  container.querySelector('div[class *= "imagePlaceholder"]')?.remove();
+  container.getElementsByClassName(mainImageClass)[0]?.remove();
+  container.querySelector(imagePlaceholderSelector)?.remove();
 }
 
 export function createFolderIconPlaceholder(): HTMLDivElement {
@@ -35,7 +37,7 @@ export function createFolderIconPlaceholder(): HTMLDivElement {
   const placeholderSVG = document.createElementNS("http://www.w3.org/2000/svg", "svg");
   const placeholderSVGPath = document.createElementNS("http://www.w3.org/2000/svg", "path");
 
-  const isGridView = isPlaylistsInGridView()
+  const isGridView = isPlaylistsInGridView();
   const size = isGridView ? "64" : "24";
   placeholder.classList.add(isGridView ? imagePlaceholderCardClass : imagePlaceholderClass);
   placeholderSVG.classList.add(SVGClass, isGridView ? SVGImageCardClass : SVGImageClass);

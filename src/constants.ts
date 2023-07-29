@@ -15,15 +15,17 @@ export const folderElementSelector = `li.main-useDropTarget-folder:has(${folderI
 export const imageContainerCardSelector = ".main-cardImage-imageWrapper > div";
 export const imageContainerSelector = ".x-entityImage-imageContainer";
 
-export const playlistsContainerSelector = "#spicetify-playlist-list > div > div:nth-child(2)";
-export const playlistsContainerGridSelector =
-  "#spicetify-playlist-list .main-gridContainer-gridContainer";
+export const imagePlaceholderClass = "x-entityImage-imagePlaceholder";
+export const imagePlaceholderCardClass = "main-card-imagePlaceholder";
+export const imagePlaceholderSelector = 'div[class *= "imagePlaceholder"]'
 
+export const mainImageClass = "main-image-image";
 export const imageCardClass = "main-cardImage-image";
 export const imageClass = "x-entityImage-image";
 
-export const imagePlaceholderClass = "x-entityImage-imagePlaceholder";
-export const imagePlaceholderCardClass = "main-card-imagePlaceholder";
+export const playlistsContainerSelector = "#spicetify-playlist-list > div > div:nth-child(2)";
+export const playlistsContainerGridSelector =
+  "#spicetify-playlist-list .main-gridContainer-gridContainer";
 
 export const SVGClass = "Svg-sc-ytk21e-0";
 export const SVGImageClass = "Svg-img-24-icon";

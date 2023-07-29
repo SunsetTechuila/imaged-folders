@@ -1,17 +1,18 @@
 import FolderImageData from "./types/folderImageData";
 import { RootlistRow, RootlistRoot, RootlistFolder } from "./types/rootlist";
 import {
-  imageContainerSelector,
-  imageContainerCardSelector,
   storageItemPrefix,
   rootlistAPIURL,
-  playlistsContainerGridSelector,
-  playlistsContainerSelector,
+  IdAttribute,
   folderElementSelector,
   folderIdElementSelector,
+  imageContainerSelector,
+  imageContainerCardSelector,
+  mainImageClass,
   imageCardClass,
   imageClass,
-  IdAttribute,
+  playlistsContainerGridSelector,
+  playlistsContainerSelector,
 } from "./constants";
 import {
   cleanUpFolderImageContainer,
@@ -77,7 +78,7 @@ export function getFolderImagesData(): FolderImageData[] {
 export function addImageToFolderElement(imageContainer: Element, imageBase64: string): void {
   const image = document.createElement("img");
   image.classList.add(
-    "main-image-image",
+    mainImageClass,
     "main-image-loaded",
     isPlaylistsInGridView() ? imageCardClass : imageClass,
   );
