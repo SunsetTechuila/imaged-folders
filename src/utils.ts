@@ -120,9 +120,12 @@ export async function optimizeImageAsync(inputImageBase64: string): Promise<stri
         if (width > height) {
           width = maxSize;
           height *= maxSize / width;
-        } else {
+        } else if (height > width) {
           height = maxSize;
           width *= maxSize / height;
+        } else {
+          width = maxSize;
+          height = maxSize;
         }
 
         const canvas = document.createElement("canvas");
