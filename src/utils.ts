@@ -116,25 +116,27 @@ export async function optimizeImageAsync(inputImageBase64: string): Promise<stri
       const maxSize = 354;
       let { width, height } = image;
 
-      if (width > height) {
-        if (width > maxSize) {
-          height *= maxSize / width;
+      if (width > maxSize || height > maxSize) {
+        if (width > height) {
           width = maxSize;
+          height *= maxSize / width;
+        } else {
+          height = maxSize;
+          width *= maxSize / height;
         }
-      } else if (height > maxSize) {
-        width *= maxSize / height;
-        height = maxSize;
+
+        const canvas = document.createElement("canvas");
+        canvas.width = width;
+        canvas.height = height;
+        const context = canvas.getContext("2d") as CanvasRenderingContext2D;
+        context.drawImage(image, 0, 0, width, height);
+
+        const optimizedImage = canvas.toDataURL("image/png");
+        canvas.remove();
+        resolve(optimizedImage);
+      } else {
+        resolve(inputImageBase64);
       }
-
-      const canvas = document.createElement("canvas");
-      canvas.width = width;
-      canvas.height = height;
-      const context = canvas.getContext("2d") as CanvasRenderingContext2D;
-      context.drawImage(image, 0, 0, width, height);
-
-      const optimizedImage = canvas.toDataURL("image/png");
-      canvas.remove();
-      resolve(optimizedImage);
     };
 
     image.src = inputImageBase64;
