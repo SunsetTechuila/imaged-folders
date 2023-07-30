@@ -118,11 +118,11 @@ export async function optimizeImageAsync(inputImageBase64: string): Promise<stri
 
       if (width > maxSize || height > maxSize) {
         if (width > height) {
-          width = maxSize;
           height *= maxSize / width;
+          width = maxSize;
         } else if (height > width) {
-          height = maxSize;
           width *= maxSize / height;
+          height = maxSize;
         } else {
           width = maxSize;
           height = maxSize;
