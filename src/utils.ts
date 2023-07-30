@@ -134,7 +134,7 @@ export async function optimizeImageAsync(inputImageBase64: string): Promise<stri
         const context = canvas.getContext("2d") as CanvasRenderingContext2D;
         context.drawImage(image, 0, 0, width, height);
 
-        const optimizedImage = canvas.toDataURL("image/png");
+        const optimizedImage = canvas.toDataURL("image/jpeg");
         canvas.remove();
         resolve(optimizedImage);
       } else {

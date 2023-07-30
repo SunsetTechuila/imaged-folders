@@ -63,9 +63,7 @@ export function createFilePicker(): [HTMLFormElement, HTMLInputElement] {
   filePickerInput.setAttribute("type", "file");
   filePickerInput.accept = [
     "image/jpeg",
-    "image/apng",
     "image/avif",
-    "image/gif",
     "image/png",
     "image/webp",
   ].join(",");
