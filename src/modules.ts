@@ -76,9 +76,7 @@ export function createContextMenus(): void {
         const imageBase64 = await optimizeImageAsync(event.target?.result as string);
         setFolderImage(filePickerInput.id, imageBase64);
       } catch (error) {
-        // eslint-disable-next-line no-console
-        console.log(error);
-        Spicetify.showNotification(failNotificationText);
+        Spicetify.showNotification(`${failNotificationText}\n${String(error)}`, true);
       }
     };
     reader.readAsDataURL(filePickerInput.files[0]);
