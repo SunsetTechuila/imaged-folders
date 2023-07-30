@@ -19,3 +19,5 @@ Right click on any folder in your navbar.
 ## Notes
 
 Works only with LibraryX UI.
+
+Got `QuotaExceededError`? See [this](https://github.com/SunsetTechuila/imaged-folders/issues/1#issuecomment-1657065199).
