@@ -73,8 +73,11 @@ export function createContextMenus(): void {
     const reader = new FileReader();
     reader.onload = async (event) => {
       try {
-        const imageBase64 = await optimizeImageAsync(event.target?.result as string);
-        setFolderImage(filePickerInput.id, imageBase64);
+        const { id } = filePickerInput;
+        let imageBase64 = event.target?.result as string;
+        const sizeKB = (`${storageItemPrefix}:${id}${imageBase64}`.length * 2) / 1000;
+        if (sizeKB > 150) imageBase64 = await optimizeImageAsync(imageBase64);
+        setFolderImage(id, imageBase64);
       } catch (error) {
         Spicetify.showNotification(`${failNotificationText}\n${String(error)}`, true);
       }

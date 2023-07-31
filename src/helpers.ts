@@ -61,12 +61,7 @@ export function createFilePicker(): [HTMLFormElement, HTMLInputElement] {
   const filePickerInput = document.createElement("input");
   filePickerInput.classList.add("hidden-visually");
   filePickerInput.setAttribute("type", "file");
-  filePickerInput.accept = [
-    "image/jpeg",
-    "image/avif",
-    "image/png",
-    "image/webp",
-  ].join(",");
+  filePickerInput.accept = ["image/jpeg", "image/avif", "image/png", "image/webp"].join(",");
   filePickerForm.appendChild(filePickerInput);
 
   return [filePickerForm, filePickerInput];
