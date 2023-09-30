@@ -5,7 +5,7 @@ export const rootlistAPIURL = "sp://core-playlist/v1/rootlist";
 
 export const storageItemPrefix = "folder-image";
 
-export const rootlistClass = "main-yourLibraryX-libraryRootlist";
+export const rootlistSelector = ".main-yourLibraryX-libraryRootlist";
 export const rootlistChildDivSelector = ".main-yourLibraryX-libraryRootlist > div";
 
 export const libraryViewButtonSelector = ".main-yourLibraryX-librarySortWrapper > button";
@@ -25,6 +25,9 @@ export const imagePlaceholderSelector = 'div[class *= "imagePlaceholder"]';
 export const mainImageClass = "main-image-image";
 export const imageCardClass = "main-cardImage-image";
 export const imageClass = "x-entityImage-image";
+export const mainImageSelector = `.${mainImageClass}`;
+export const imageCardSelector = `.${imageCardClass}`;
+export const imageSelector = `.${imageClass}`;
 
 export const playlistsContainerSelector = "#spicetify-playlist-list > div > div:nth-child(2)";
 export const playlistsContainerGridSelector =

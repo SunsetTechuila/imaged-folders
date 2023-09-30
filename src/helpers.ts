@@ -4,9 +4,9 @@ import {
   imagePlaceholderClass,
   imagePlaceholderCardClass,
   imagePlaceholderSelector,
-  mainImageClass,
-  imageCardClass,
-  imageClass,
+  mainImageSelector,
+  imageCardSelector,
+  imageSelector,
   folderSVGPath,
   SVGClass,
   SVGImageClass,
@@ -23,12 +23,12 @@ export function hasImage(id: string): boolean {
 
 export function hasImageElement(inputElement: Element): boolean {
   return Boolean(
-    inputElement.getElementsByClassName(isPlaylistsInGridView() ? imageCardClass : imageClass)[0],
+    inputElement.querySelector(isPlaylistsInGridView() ? imageCardSelector : imageSelector),
   );
 }
 
 export function cleanUpFolderImageContainer(container: Element): void {
-  container.getElementsByClassName(mainImageClass)[0]?.remove();
+  container.querySelector(mainImageSelector)?.remove();
   container.querySelector(imagePlaceholderSelector)?.remove();
 }
 

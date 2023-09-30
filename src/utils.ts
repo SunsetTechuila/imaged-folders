@@ -65,12 +65,12 @@ export function getFolderImageDataFromElement(inputElement: Element): FolderImag
 
 export function getFolderImagesData(): FolderImageData[] {
   const foldersImageData: FolderImageData[] = [];
-  const folderElements = document.querySelectorAll(folderElementSelector);
+  const folderElements = Array.from(document.querySelectorAll(folderElementSelector));
 
-  for (let i = 0, max = folderElements.length; i < max; i += 1) {
-    const folderImageData = getFolderImageDataFromElement(folderElements[i]);
+  folderElements.forEach((folderElement) => {
+    const folderImageData = getFolderImageDataFromElement(folderElement);
     if (folderImageData) foldersImageData.push(folderImageData);
-  }
+  });
 
   return foldersImageData;
 }

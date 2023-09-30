@@ -1,7 +1,7 @@
 import { hasImage, createFilePicker, hasImageElement } from "./helpers";
 import {
   storageItemPrefix,
-  rootlistClass,
+  rootlistSelector,
   rootlistChildDivSelector,
   libraryViewButtonSelector,
   localeChoosePhotoString,
@@ -54,10 +54,10 @@ export async function cleanUpStorageAsync(): Promise<void> {
 
 export function updateFolderImages(): void {
   const foldersImageData = getFolderImagesData();
-  for (let i = 0, max = foldersImageData.length; i < max; i += 1) {
-    if (!hasImageElement(foldersImageData[i].imageContainer))
-      addImageToFolderElement(foldersImageData[i].imageContainer, foldersImageData[i].imageBase64);
-  }
+  foldersImageData.forEach((folderImageData) => {
+    if (!hasImageElement(folderImageData.imageContainer))
+      addImageToFolderElement(folderImageData.imageContainer, folderImageData.imageBase64);
+  });
 }
 
 export function createContextMenus(): void {
@@ -163,7 +163,7 @@ export function trackPlaylistsChanges(): void {
       }
     });
   }
-  const rootlist = document.getElementsByClassName(rootlistClass)[0];
+  const rootlist = document.querySelector(rootlistSelector);
   const rootlistObserver = new MutationObserver(onRootlistMutation);
   rootlistObserver.observe(rootlist as Node, { attributes: true, attributeFilter: ["class"] });
 }
