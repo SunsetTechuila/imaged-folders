@@ -39,8 +39,7 @@ function removeFolderImage(id: string): void {
 export async function cleanUpStorageAsync(): Promise<void> {
   const IDs = await fetchFolderIDsAsync();
   for (let i = 0, max = localStorage.length; i < max; i += 1) {
-    // @ts-ignore
-    const key: string = localStorage.key(i);
+    const key = localStorage.key(i) as string;
     const regex = new RegExp(`${storageItemPrefix}:(\\w+)$`);
     const match = key.match(regex);
     if (match) {
