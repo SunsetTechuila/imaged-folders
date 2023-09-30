@@ -66,7 +66,6 @@ export function createContextMenus(): void {
   const choosePhotoText = Locale.get(localeChoosePhotoString);
 
   const [filePickerForm, filePickerInput] = createFilePicker();
-  document.body.appendChild(filePickerForm);
   filePickerInput.onchange = () => {
     if (!filePickerInput.files?.length) return;
     const reader = new FileReader();
