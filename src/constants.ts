@@ -7,7 +7,7 @@ export const storageItemPrefix = "folder-image";
 
 export const rootlistSelector = ".main-yourLibraryX-libraryRootlist > div";
 
-export const IdAttribute = "aria-labelledby"
+export const IdAttribute = "aria-labelledby";
 
 export const folderIdElementSelector = `div[${IdAttribute} *= "folder:"]`;
 export const folderElementSelector = `li.main-useDropTarget-folder:has(${folderIdElementSelector})`;
@@ -17,7 +17,7 @@ export const imageContainerSelector = ".x-entityImage-imageContainer";
 
 export const imagePlaceholderClass = "x-entityImage-imagePlaceholder";
 export const imagePlaceholderCardClass = "main-card-imagePlaceholder";
-export const imagePlaceholderSelector = 'div[class *= "imagePlaceholder"]'
+export const imagePlaceholderSelector = 'div[class *= "imagePlaceholder"]';
 
 export const mainImageClass = "main-image-image";
 export const imageCardClass = "main-cardImage-image";
