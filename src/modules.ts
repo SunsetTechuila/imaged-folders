@@ -1,7 +1,9 @@
 import { hasImage, createFilePicker, hasImageElement } from "./helpers";
 import {
   storageItemPrefix,
-  rootlistSelector,
+  rootlistClass,
+  rootlistChildDivSelector,
+  libraryViewButtonSelector,
   localeChoosePhotoString,
   localeFailNotificationString,
   localeRemovePhotoString,
@@ -110,28 +112,58 @@ export function createContextMenus(): void {
 
 export function trackPlaylistsChanges(): void {
   let playlistsContainer = getPlaylistsContainer();
-  const playlistsContainerObserverConfig = { childList: true };
   const playlistsContainerObserver = new MutationObserver(updateFolderImages);
+  const playlistsContainerObserverConfig = { childList: true };
+  playlistsContainerObserver.observe(playlistsContainer as Node, playlistsContainerObserverConfig);
 
-  const rootlist = document.querySelector(rootlistSelector);
-  // eslint-disable-next-line @typescript-eslint/no-use-before-define
-  const rootlistObserver = new MutationObserver(handleRootlistMutation);
-
-  function handleRootlistMutation(): void {
-    if (!playlistsContainer?.isConnected) {
-      playlistsContainer = getPlaylistsContainer();
-      if (!playlistsContainer) {
-        setTimeout(handleRootlistMutation, 300);
-        return;
-      }
-      updateFolderImages();
-      playlistsContainerObserver.observe(
-        playlistsContainer as Node,
-        playlistsContainerObserverConfig,
-      );
+  function reconnectPlaylistsContainer(afterConnect: () => void): void {
+    playlistsContainer = getPlaylistsContainer();
+    if (!playlistsContainer) {
+      setTimeout(reconnectPlaylistsContainer, 300);
+      return;
     }
+
+    afterConnect();
+
+    playlistsContainerObserver.observe(
+      playlistsContainer as Node,
+      playlistsContainerObserverConfig,
+    );
   }
 
-  rootlistObserver.observe(rootlist as Node, { childList: true });
-  playlistsContainerObserver.observe(playlistsContainer as Node, playlistsContainerObserverConfig);
+  function onRootlistChildDivMutation(): void {
+    if (!playlistsContainer?.isConnected) {
+      reconnectPlaylistsContainer(updateFolderImages);
+    }
+  }
+  const rootlistChildDiv = document.querySelector(rootlistChildDivSelector);
+  const rootlistChildDivObserver = new MutationObserver(onRootlistChildDivMutation);
+  rootlistChildDivObserver.observe(rootlistChildDiv as Node, { childList: true });
+
+  let libraryViewButton: Element | null;
+  const libraryViewButtonObserverConfig = { attributes: true, attributeFilter: ["aria-label"] };
+  // eslint-disable-next-line @typescript-eslint/no-use-before-define
+  const libraryViewButtonObserver = new MutationObserver(onRootlistMutation);
+  function observeLibraryViewButton(): void {
+    setTimeout(() => {
+      libraryViewButton = document.querySelector(libraryViewButtonSelector);
+      if (libraryViewButton instanceof HTMLButtonElement) {
+        libraryViewButtonObserver.observe(libraryViewButton, libraryViewButtonObserverConfig);
+      }
+    }, 300);
+  }
+  observeLibraryViewButton();
+
+  function onRootlistMutation(): void {
+    reconnectPlaylistsContainer(() => {
+      updateFolderImages();
+
+      if (!libraryViewButton?.isConnected) {
+        observeLibraryViewButton();
+      }
+    });
+  }
+  const rootlist = document.getElementsByClassName(rootlistClass)[0];
+  const rootlistObserver = new MutationObserver(onRootlistMutation);
+  rootlistObserver.observe(rootlist as Node, { attributes: true, attributeFilter: ["class"] });
 }

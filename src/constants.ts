@@ -5,7 +5,10 @@ export const rootlistAPIURL = "sp://core-playlist/v1/rootlist";
 
 export const storageItemPrefix = "folder-image";
 
-export const rootlistSelector = ".main-yourLibraryX-libraryRootlist > div";
+export const rootlistClass = "main-yourLibraryX-libraryRootlist";
+export const rootlistChildDivSelector = ".main-yourLibraryX-libraryRootlist > div";
+
+export const libraryViewButtonSelector = ".main-yourLibraryX-librarySortWrapper > button";
 
 export const IdAttribute = "aria-labelledby";
 
